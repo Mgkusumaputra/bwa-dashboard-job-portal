@@ -1,4 +1,7 @@
+"use client";
+
 import { Button } from "@/components/ui/button";
+import { useRouter } from "next/navigation";
 import {
   AiOutlineHome,
   AiOutlineMessage,
@@ -8,6 +11,8 @@ import { FaRegBuilding, FaRegClipboard, FaRegCalendar } from "react-icons/fa";
 import { MdOutlinePeopleAlt, MdOutlineLogout } from "react-icons/md";
 
 export default function Sidebar() {
+  const router = useRouter();
+
   return (
     <div className="pb-12 min-h-screen">
       <div className="space-y-4 py-4">
@@ -17,6 +22,7 @@ export default function Sidebar() {
             <Button
               variant="ghost"
               className=" w-full justify-start rounded-none hover:text-primary"
+              onClick={() => router.push("/")}
             >
               <AiOutlineHome className="mr-2 text-lg" />
               Home
@@ -45,6 +51,7 @@ export default function Sidebar() {
             <Button
               variant="ghost"
               className=" w-full justify-start rounded-none hover:text-primary"
+              onClick={() => router.push("/job-listing")}
             >
               <FaRegClipboard className="mr-2 text-lg" />
               Job Listing
