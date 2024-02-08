@@ -1,5 +1,4 @@
 import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import {
   Table,
   TableBody,
@@ -9,9 +8,9 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { FiMoreVertical } from "react-icons/fi";
 
 import { JOB_LISTINGS_COLUMNS, JOB_LISTINGS_DATA } from "@/constant";
+import ActionButtonTable from "@/components/organism/ActionButtonTable";
 
 export default function JobListing() {
   return (
@@ -45,9 +44,7 @@ export default function JobListing() {
                   {item.applicants} / {item.needs}
                 </TableCell>
                 <TableCell>
-                  <Button size="icon" variant="outline">
-                    <FiMoreVertical className="w-4 h-4" />
-                  </Button>
+                  <ActionButtonTable url="/job-detail/1" />
                 </TableCell>
               </TableRow>
             ))}
