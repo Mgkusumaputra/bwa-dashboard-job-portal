@@ -72,6 +72,7 @@ export default function Sidebar() {
           <Button
             variant="ghost"
             className=" w-full justify-start rounded-none hover:text-primary"
+            onClick={() => router.push("/settings")}
           >
             <AiOutlineSetting className="mr-2 text-lg" />
             Settings
