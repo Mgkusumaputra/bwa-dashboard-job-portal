@@ -12,7 +12,6 @@ import {
 import { Input } from "@/components/ui/input";
 import { signInFormSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { Metadata } from "next";
 import Link from "next/link";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -49,7 +48,7 @@ export default function SignIn() {
                     <FormControl>
                       <Input
                         className="w-[450px]"
-                        placeholder="mail@yourcompany.co"
+                        placeholder="Enter your email..."
                         {...field}
                       />
                     </FormControl>
@@ -65,7 +64,7 @@ export default function SignIn() {
                     <FormControl>
                       <Input
                         className="w-[450px]"
-                        placeholder="Your password"
+                        placeholder="Enter your password..."
                         {...field}
                       />
                     </FormControl>
