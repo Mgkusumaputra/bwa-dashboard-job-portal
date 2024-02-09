@@ -69,3 +69,30 @@ export const EMPLOYEE_OPTIONS: optionType[] = [
     label: "1000-above",
   },
 ];
+
+export const SOCIAL_LINK_LIST = [
+  {
+    name: "facebook",
+    label: "Facebook",
+  },
+  {
+    name: "instagram",
+    label: "Instagram",
+  },
+  {
+    name: "x",
+    label: "X",
+  },
+  {
+    name: "linkedin",
+    label: "LinkedIn",
+  },
+  {
+    name: "youtube",
+    label: "Youtube",
+  },
+  {
+    name: "github",
+    label: "Github",
+  },
+];

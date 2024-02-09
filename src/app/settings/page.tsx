@@ -1,11 +1,12 @@
 import OverviewForm from "@/components/forms/OverviewForm";
+import SocialMediaForm from "@/components/forms/SocialMediaForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 
 export default function Settings() {
   return (
     <div>
-      <h1 className="font-semibold text-3xl">Settings</h1>
+      <h1 className="font-semibold text-3xl mb-5">Settings</h1>
       <Tabs defaultValue="overview">
         <TabsList className="mb-8">
           <TabsTrigger value="overview">Overview</TabsTrigger>
@@ -15,7 +16,9 @@ export default function Settings() {
         <TabsContent value="overview">
           <OverviewForm />
         </TabsContent>
-        <TabsContent value="socialLinks">Social Links</TabsContent>
+        <TabsContent value="socialLinks">
+          <SocialMediaForm />
+        </TabsContent>
         <TabsContent value="teams">Teams</TabsContent>
       </Tabs>
     </div>
