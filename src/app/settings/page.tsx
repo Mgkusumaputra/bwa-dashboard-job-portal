@@ -1,3 +1,4 @@
+import OverviewForm from "@/components/forms/OverviewForm";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import React from "react";
 
@@ -11,7 +12,9 @@ export default function Settings() {
           <TabsTrigger value="socialLinks">Social Links</TabsTrigger>
           <TabsTrigger value="teams">Teams</TabsTrigger>
         </TabsList>
-        <TabsContent value="overview">Overview</TabsContent>
+        <TabsContent value="overview">
+          <OverviewForm />
+        </TabsContent>
         <TabsContent value="socialLinks">Social Links</TabsContent>
         <TabsContent value="teams">Teams</TabsContent>
       </Tabs>
