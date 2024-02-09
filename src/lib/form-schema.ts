@@ -61,3 +61,10 @@ export const socialMediaFormSchema = z.object({
   youtube: z.string().optional(),
   github: z.string().optional(),
 });
+
+export const teamFormSchema = z.object({
+  name: z.string({ required_error: "Name is required" }),
+  role: z.string({ required_error: "Role is required" }),
+  instagram: z.string().optional(),
+  linkedin: z.string({ required_error: "LinkedIn is required" }),
+});
