@@ -1,6 +1,7 @@
 "use client";
 
 import { Button } from "@/components/ui/button";
+import { signOut } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import {
   AiOutlineHome,
@@ -80,6 +81,7 @@ export default function Sidebar() {
           <Button
             variant="ghost"
             className=" w-full justify-start rounded-none text-red-500 hover:bg-red-200 hover:text-red-500"
+            onClick={() => signOut()}
           >
             <MdOutlineLogout className="mr-2 text-lg" />
             Log Out
