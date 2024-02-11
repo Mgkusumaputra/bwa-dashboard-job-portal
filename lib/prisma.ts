@@ -9,7 +9,7 @@ declare const globalThis: {
 if (process.env.NODE_ENV === "production") {
   prisma = new PrismaClient();
 } else {
-  if (globalThis!.prisma) {
+  if (!globalThis.prisma) {
     globalThis.prisma = new PrismaClient();
   }
 
