@@ -34,9 +34,26 @@ import InputSkills from "@/components/organism/InputSkills";
 import CKEditor from "@/components/organism/CKEditor";
 import InputBenefits from "@/components/organism/InputBenefits";
 import { Button } from "@/components/ui/button";
+import useSWR from "swr";
+import { fetcher } from "@/lib/utils";
+import { CategoryJob, Job } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import moment from "moment";
+import { useRouter } from "next/navigation";
+import { useToast } from "@/components/ui/use-toast";
 
 export default function PostJob() {
+  const { data, error, isLoading } = useSWR<CategoryJob[]>(
+    "/api/job/categories",
+    fetcher
+  );
+  const { data: session } = useSession();
+
+  const router = useRouter();
+
   const [editorLoaded, setEditorLoaded] = useState<boolean>(false);
+
+  const { toast } = useToast();
 
   const form = useForm<z.infer<typeof jobFormSchema>>({
     resolver: zodResolver(jobFormSchema),
@@ -45,8 +62,41 @@ export default function PostJob() {
     },
   });
 
-  const onSubmit = (val: z.infer<typeof jobFormSchema>) => {
-    console.log(val);
+  const onSubmit = async (val: z.infer<typeof jobFormSchema>) => {
+    try {
+      const body: any = {
+        applicants: 0,
+        benefits: val.benefits,
+        categoryJobId: val.categoryId,
+        companyId: session?.user.id!!,
+        datePosted: moment().toDate(),
+        description: val.jobDescription,
+        dueDate: moment().add(1, "M").toDate(),
+        jobType: val.jobType,
+        needs: 20,
+        niceToHave: val.niceToHave,
+        requiredSkills: val.requiredSkills,
+        responsibility: val.responsibility,
+        role: val.roles,
+        salaryFrom: val.salaryFrom,
+        salaryTo: val.salaryTo,
+        whoYouAre: val.whoYouAre,
+      };
+
+      await fetch("/api/job", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      await router.push("/job-listing");
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Error when inputing data. Please try again",
+      });
+      console.log(error);
+    }
   };
 
   useEffect(() => {
@@ -194,13 +244,11 @@ export default function PostJob() {
                       </SelectTrigger>
                     </FormControl>
                     <SelectContent>
-                      <SelectItem value="m@example.com">
-                        m@example.com
-                      </SelectItem>
-                      <SelectItem value="m@google.com">m@google.com</SelectItem>
-                      <SelectItem value="m@support.com">
-                        m@support.com
-                      </SelectItem>
+                      {data?.map((item: any) => (
+                        <SelectItem key={item.id} value={item.id}>
+                          {item.name}
+                        </SelectItem>
+                      ))}
                     </SelectContent>
                   </Select>
                   <FormMessage />
@@ -214,7 +262,7 @@ export default function PostJob() {
             title="Required Skills"
             subtitle="Add required skills for the job"
           >
-            <InputSkills label="Add Skills" name="skills" form={form} />
+            <InputSkills label="Add Skills" name="requiredSkills" form={form} />
           </FieldInput>
 
           {/* Job Description */}
