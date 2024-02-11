@@ -11,14 +11,33 @@ import {
 
 import { JOB_LISTINGS_COLUMNS, JOB_LISTINGS_DATA } from "@/constant";
 import ActionButtonTable from "@/components/organism/ActionButtonTable";
+import prisma from "../../../../lib/prisma";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/app/api/auth/[...nextauth]/route";
+import { Job } from "@prisma/client";
+import { dateFormat } from "@/lib/utils";
+import moment from "moment";
 
-export default function JobListing() {
+async function getDataJobs() {
+  const session = await getServerSession(authOptions);
+
+  const job = prisma.job.findMany({
+    where: {
+      companyId: session?.user.id,
+    },
+  });
+
+  return job;
+}
+
+export default async function JobListing() {
+  const jobsData = await getDataJobs();
+
   return (
     <div>
       <h1 className="font-semibold text-3xl">Job Listing</h1>
       <div className="mt-10">
         <Table>
-          <TableCaption>A list of your recent invoices.</TableCaption>
           <TableHeader>
             <TableRow>
               {JOB_LISTINGS_COLUMNS.map((item: string, i: number) => (
@@ -28,14 +47,18 @@ export default function JobListing() {
             </TableRow>
           </TableHeader>
           <TableBody>
-            {JOB_LISTINGS_DATA.map((item: any, i: number) => (
-              <TableRow key={item.roles + i}>
-                <TableCell>{item.roles}</TableCell>
+            {jobsData.map((item: Job, i: number) => (
+              <TableRow key={item.role + i}>
+                <TableCell>{item.role}</TableCell>
                 <TableCell>
-                  <Badge>{item.status}</Badge>
+                  {moment(item.datePosted).isBefore(item.dueDate) ? (
+                    <Badge>Live</Badge>
+                  ) : (
+                    <Badge variant="destructive">Expired</Badge>
+                  )}
                 </TableCell>
-                <TableCell>{item.datePosted}</TableCell>
-                <TableCell>{item.dueDate}</TableCell>
+                <TableCell>{dateFormat(item.datePosted)}</TableCell>
+                <TableCell>{dateFormat(item.dueDate)}</TableCell>
                 <TableCell>
                   <Badge variant="outline">{item.jobType}</Badge>
                 </TableCell>
