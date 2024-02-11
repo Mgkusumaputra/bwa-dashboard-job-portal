@@ -6,3 +6,107 @@ datasource db {
     provider = "postgresql"
     url      = env("DATABASE_URL")
 }
+
+model CategoryJob {
+    id   String @id @default(cuid())
+    name String
+    Job  Job[]
+}
+
+model Industry {
+    id   String @id @default(cuid())
+    name String
+}
+
+model Company {
+    id                 String               @id @default(cuid())
+    name               String
+    password           String
+    email              String               @unique
+    CompanySocialMedia CompanySocialMedia[]
+    CompanyTeam        CompanyTeam[]
+    CompanyOverview    CompanyOverview[]
+    Job                Job[]
+}
+
+model CompanySocialMedia {
+    id        String   @id @default(cuid())
+    facebook  String
+    instagram String
+    x         String
+    linkedin  String
+    youtube   String
+    github    String
+    companyId String?
+    Company   Company? @relation(fields: [companyId], references: [id])
+}
+
+model CompanyTeam {
+    id        String   @id @default(cuid())
+    name      String
+    role      String
+    instagram String?
+    linkedin  String
+    companyId String?
+    Company   Company? @relation(fields: [companyId], references: [id])
+}
+
+model CompanyOverview {
+    id          String   @id @default(cuid())
+    image       String
+    website     String
+    name        String
+    location    String
+    employee    String
+    industry    String
+    dateFounded DateTime
+    techStack   String[]
+    description String
+    companyId   String?
+    company     Company? @relation(fields: [companyId], references: [id])
+}
+
+model Job {
+    id             String       @id @default(cuid())
+    role           String
+    datePosted     DateTime     @default(now())
+    dueDate        DateTime
+    jobType        String
+    applicants     Int
+    needs          Int
+    salaryFrom     String
+    salaryTo       String
+    requiredSkills String[]
+    description    String
+    responsibility String
+    whoYouAre      String
+    niceToHave     String
+    benefits       Json
+    companyId      String?
+    categoryJobId  String?
+    company        Company?     @relation(fields: [companyId], references: [id])
+    categoryJob    CategoryJob? @relation(fields: [categoryJobId], references: [id])
+    Applicants     Applicants[]
+}
+
+model User {
+    id         String       @id @default(cuid())
+    name       String
+    password   String
+    email      String       @unique
+    Applicants Applicants[]
+}
+
+model Applicants {
+    id               String  @id @default(cuid())
+    userId           String?
+    jobId            String?
+    previousJobTitle String
+    phone            String
+    linkedin         String
+    portfolio        String
+    coverLetter      String
+    resume           String
+    user             User?   @relation(fields: [userId], references: [id])
+    job              Job?    @relation(fields: [jobId], references: [id])
+}
