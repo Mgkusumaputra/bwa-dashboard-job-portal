@@ -1,10 +1,6 @@
 import { Button } from "@/components/ui/button";
 
 export default function Home() {
-  return (
-    <div className="">
-      <Button>Submit</Button>
-    </div>
-  );
+  return <div className="">Dashboard</div>;
 }
 
