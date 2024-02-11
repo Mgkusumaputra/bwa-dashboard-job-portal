@@ -31,7 +31,15 @@ export async function fetcher<JSON = any>(
   return res.json() as Promise<JSON>;
 }
 
-export const dateFormat = (date: any, format: string = "DD MM YYYY") => {
+export const dateFormat = (date: any, format: string = "DD MMM YYYY") => {
   return moment(date).format(format);
+};
+
+export const formatCurrency = (nominal: string) => {
+  return new Intl.NumberFormat("id-ID", {
+    style: "currency",
+    currency: "IDR",
+    maximumSignificantDigits: 2,
+  }).format(parseInt(nominal));
 };
 

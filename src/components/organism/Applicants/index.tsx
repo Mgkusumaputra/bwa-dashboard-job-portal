@@ -10,7 +10,11 @@ import {
 import { JOB_APPLICANT_COLUMNS, JOB_APPLICANT_DATA } from "@/constant";
 import ActionButtonTable from "../ActionButtonTable";
 
-export default function Applicants() {
+interface applicantsProps {
+  applicants: any;
+}
+
+export default function Applicants({ applicants }: applicantsProps) {
   return (
     <Table>
       <TableHeader>
@@ -22,15 +26,18 @@ export default function Applicants() {
         </TableRow>
       </TableHeader>
       <TableBody>
-        {JOB_APPLICANT_DATA.map((item: any, i: number) => (
-          <TableRow key={item.name + i}>
-            <TableCell>{item.name}</TableCell>
-            <TableCell>{item.appliedDate}</TableCell>
-            <TableCell>
-              <ActionButtonTable url="" />
-            </TableCell>
-          </TableRow>
-        ))}
+        {applicants && (
+          <>
+            {applicants.map((item: any, i: number) => (
+              <TableRow key={item.id + i}>
+                <TableCell>{item.user.name}</TableCell>
+                <TableCell>
+                  <ActionButtonTable url="" />
+                </TableCell>
+              </TableRow>
+            ))}
+          </>
+        )}
       </TableBody>
     </Table>
   );

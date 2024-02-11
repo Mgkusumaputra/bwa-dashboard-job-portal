@@ -67,7 +67,7 @@ export default async function JobListing() {
                   {item.applicants} / {item.needs}
                 </TableCell>
                 <TableCell>
-                  <ActionButtonTable url="/job-detail/1" />
+                  <ActionButtonTable url={`/job-detail/${item.id}`} />
                 </TableCell>
               </TableRow>
             ))}

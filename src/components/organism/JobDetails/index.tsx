@@ -1,43 +1,51 @@
 import { Badge } from "@/components/ui/badge";
 import { Progress } from "@/components/ui/progress";
 import { Separator } from "@/components/ui/separator";
+import { dateFormat, formatCurrency } from "@/lib/utils";
+import { CategoryJob, Job } from "@prisma/client";
 import { PartyPopperIcon } from "lucide-react";
-import { number } from "zod";
 
-export default function JobDetails() {
-  const JOB_DETAILS_1 = [
+type jobDetailType = {
+  categoryJob: CategoryJob | null;
+} & Job;
+
+interface jobDetailProps {
+  detail: jobDetailType | null;
+}
+
+export default function JobDetails({ detail }: jobDetailProps) {
+  const UPPER_SECTION = [
     {
       title: "Description",
-      subtitle:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus sequi quae nam vel accusantium? Aperiam deserunt saepe at impedit quod voluptates tenetur iste reprehenderit eius, officiis aliquam veniam, minima facilis.",
+      subtitle: detail?.description!!,
     },
     {
       title: "Responsibilities",
-      subtitle:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus sequi quae nam vel accusantium? Aperiam deserunt saepe at impedit quod voluptates tenetur iste reprehenderit eius, officiis aliquam veniam, minima facilis.",
+      subtitle: detail?.responsibility!!,
     },
     {
       title: "Who You Are",
-      subtitle:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus sequi quae nam vel accusantium? Aperiam deserunt saepe at impedit quod voluptates tenetur iste reprehenderit eius, officiis aliquam veniam, minima facilis.",
+      subtitle: detail?.whoYouAre!!,
     },
     {
       title: "Nice-To-Haves",
-      subtitle:
-        "Lorem ipsum dolor, sit amet consectetur adipisicing elit. Accusamus sequi quae nam vel accusantium? Aperiam deserunt saepe at impedit quod voluptates tenetur iste reprehenderit eius, officiis aliquam veniam, minima facilis.",
+      subtitle: detail?.niceToHave!!,
     },
   ];
 
-  const JOB_DETAILS_2 = [
-    { title: "Apply Before", description: "12 August 2024" },
-    { title: "Job Posted On", description: "5 May 2024" },
-    { title: "Job Type", description: "Full-Time" },
-    { title: "Salary", description: "Rp 15.000.000 - Rp 18.000.000" },
+  const LEFTBAR_SECTION = [
+    { title: "Apply Before", description: dateFormat(detail?.dueDate) },
+    { title: "Job Posted On", description: dateFormat(detail?.datePosted) },
+    { title: "Job Type", description: detail?.jobType },
+    {
+      title: "Salary",
+      description: `${formatCurrency(detail?.salaryFrom!!)} - ${formatCurrency(
+        detail?.salaryTo!!
+      )}`,
+    },
   ];
 
-  const REQUIRED_SKILLS = ["HTML", "Javascript", "Golang"];
-
-  const BENEFITS = [0, 1, 2];
+  const benefits: any = detail?.benefits;
 
   return (
     <div>
@@ -45,10 +53,13 @@ export default function JobDetails() {
       <div className="grid grid-cols-3 w-full gap-5">
         {/* Main Content Section */}
         <div className="col-span-2 space-y-10">
-          {JOB_DETAILS_1.map((item: any, key: number) => (
+          {UPPER_SECTION.map((item: any, key: number) => (
             <div key={key}>
               <h1 className="text-3xl font-semibold">{item.title}</h1>
-              <p className="text-gray-500 mt-3">{item.subtitle}</p>
+              <div
+                className="text-gray-500 mt-3"
+                dangerouslySetInnerHTML={{ __html: item.subtitle!! }}
+              ></div>
             </div>
           ))}
         </div>
@@ -58,12 +69,16 @@ export default function JobDetails() {
           <h1 className="text-3xl font-semibold">About this role</h1>
           <div className="shadow p-3 text-center my-6">
             <p>
-              1 <span className="text-gray-500">of 10 capacity</span>
+              {`${detail?.applicants} `}
+              <span className="text-gray-500">of {detail?.needs} capacity</span>
             </p>
-            <Progress className="mt-3" value={10} />
+            <Progress
+              className="mt-3"
+              value={(detail?.applicants || 0) / (detail?.needs || 0) / 100}
+            />
           </div>
           <div className="mb-10 space-y-5">
-            {JOB_DETAILS_2.map((item: any, key: number) => (
+            {LEFTBAR_SECTION.map((item: any, key: number) => (
               <div className="flex justify-between" key={key}>
                 <p className="text-gray-500">{item.title}</p>
                 <p className="font-semibold">{item.description}</p>
@@ -76,7 +91,7 @@ export default function JobDetails() {
           <div className="my-10">
             <h1 className="text-3xl font-semibold mb-4">Category</h1>
             <div className="space-x-5">
-              <Badge className="px-6 py-3">Software Engineer</Badge>
+              <Badge className="px-6 py-3">{detail?.categoryJob?.name}</Badge>
             </div>
           </div>
 
@@ -85,7 +100,7 @@ export default function JobDetails() {
           <div className="my-10">
             <h1 className="text-3xl font-semibold mb-4">Required Skills</h1>
             <div className="space-x-5">
-              {REQUIRED_SKILLS.map((item: string, key: number) => (
+              {detail?.requiredSkills.map((item: string, key: number) => (
                 <Badge className="px-4 py-2" variant="outline" key={key}>
                   {item}
                 </Badge>
@@ -105,15 +120,12 @@ export default function JobDetails() {
         </p>
 
         <div className="grid grid-cols-4 gap-5 mt-9">
-          {BENEFITS.map((item: number) => (
+          {benefits?.map((item: any) => (
             <div key={item}>
               <PartyPopperIcon className="w-10 h-10 text-primary mb-6" />
 
-              <h2 className="text-lg font-semibold">Full Healthcare</h2>
-              <p className="text-gray-500">
-                We believe in thriving communities and that starts with our team
-                being happy and healthy.
-              </p>
+              <h2 className="text-lg font-semibold">{item.benefit}</h2>
+              <p className="text-gray-500">{item.description}</p>
             </div>
           ))}
         </div>
