@@ -21,7 +21,7 @@ export default function CKEditor({ form, name, editorLoaded }: CKEditorProps) {
   return (
     <>
       {editorLoaded ? (
-        <div>
+        <div className="max-w-[500px]">
           <CKEditor
             editor={ClassicEditor}
             data={form.getValues(name)}

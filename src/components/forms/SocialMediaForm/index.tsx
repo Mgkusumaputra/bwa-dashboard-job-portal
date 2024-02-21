@@ -11,20 +11,65 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
+import { useToast } from "@/components/ui/use-toast";
 import { SOCIAL_LINK_LIST } from "@/constant";
 import { socialMediaFormSchema } from "@/lib/form-schema";
 import { zodResolver } from "@hookform/resolvers/zod";
-import React from "react";
+import { CompanySocialMedia } from "@prisma/client";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import React, { useState } from "react";
 import { useForm } from "react-hook-form";
 import { z } from "zod";
 
-export default function SocialMediaForm() {
+interface SocialMediaFromProps {
+  detail: CompanySocialMedia | undefined;
+}
+
+export default function SocialMediaForm({ detail }: SocialMediaFromProps) {
   const form = useForm<z.infer<typeof socialMediaFormSchema>>({
     resolver: zodResolver(socialMediaFormSchema),
+    defaultValues: {
+      facebook: detail?.facebook,
+      instagram: detail?.instagram,
+      x: detail?.x,
+      linkedin: detail?.linkedin,
+      github: detail?.github,
+      youtube: detail?.youtube,
+    },
   });
 
-  const onSubmit = (val: z.infer<typeof socialMediaFormSchema>) => {
-    console.log(val);
+  const router = useRouter();
+  const { data: session } = useSession();
+  const { toast } = useToast();
+
+  const onSubmit = async (val: z.infer<typeof socialMediaFormSchema>) => {
+    try {
+      const body = {
+        ...val,
+        companyId: session?.user.id,
+      };
+
+      await fetch("/api/company/social-media", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(body),
+      });
+
+      await router.refresh();
+
+      toast({
+        title: "Success",
+        description: "Editing social media success",
+      });
+    } catch (error) {
+      toast({
+        title: "Error",
+        description: "Please try again",
+      });
+
+      console.log(error);
+    }
   };
 
   return (
@@ -46,7 +91,7 @@ export default function SocialMediaForm() {
                     <FormControl>
                       <Input
                         className="w-[450px]"
-                        placeholder={`Your ${item.name} username`}
+                        placeholder={`Your ${item.name} username URL`}
                         {...field}
                       />
                     </FormControl>
